@@ -6,6 +6,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
+
+	static final int PORT = 8442;
 	
 	static private String leseNachricht(Socket s) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
@@ -16,17 +18,25 @@ public class Server {
 	}
 	
 	static public String erstelleSocketUndLeseNachricht() throws Exception {
-		//Erstellen Sie einen ServerSocket der auf eine Verbindung wartet und eingehende Nachrichten liest.
-		return null;
+		//DONE - Erstellen Sie einen ServerSocket der auf eine Verbindung wartet und eingehende Nachrichten liest.
+		String serialisierteNachricht;
+		try(ServerSocket serverSocket = new ServerSocket(PORT)) {
+			Socket socket = serverSocket.accept();
+			serialisierteNachricht = leseNachricht(socket);
+		}
+		return serialisierteNachricht;
 	}
 	
 	static public BestellPosition unmarschalNachricht( String msg ) {
-		//Implementieren Sie eine geeignete Deserialisierung der Nachricht hier, um die empfangenen Daten in ein Objekt 
+		//DONE - Implementieren Sie eine geeignete Deserialisierung der Nachricht hier, um die empfangenen Daten in ein Objekt
 		//der Klasse BestellPosition zu transformieren.
-		return null;
+		String[] values = msg.split("\t");
+		BestellPosition bp = new BestellPosition();
+		bp.material=values[0]; bp.preis=values[1]; bp.anzahl=Integer.parseInt(values[2]);
+		return bp;
 	}
 	
-	public static void bearbeiteBestellung( BestellPosition bp) {
+	public static void bearbeiteBestellung(BestellPosition bp) {
 		System.out.println("Bestellung erhalten\n#######");
 		System.out.println( bp );
 	}

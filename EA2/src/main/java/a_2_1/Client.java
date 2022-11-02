@@ -5,24 +5,26 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client {
+
+	static final String IP = "127.0.0.1";
+	static final int PORT = 8442;
 	
 	public static void schreibeNachricht( Socket s, String msg) throws Exception {
-		PrintWriter printWriter =
-	            new PrintWriter(
-	                new OutputStreamWriter(
-	                    s.getOutputStream()));
-	        printWriter.print(msg);
-	        printWriter.flush();
+		PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
+		printWriter.print(msg);
+		printWriter.flush();
 	}
 	
 	public static void verbindeUndSchreibeNachricht(String msg) throws Exception {
-		//Implementieren Sie den Verbindungsaufbau hier. Senden Sie die Informationen mit Hilfe der Methode "schreibeNachricht"
-		
+		//DONE - Implementieren Sie den Verbindungsaufbau hier. Senden Sie die Informationen mit Hilfe der Methode "schreibeNachricht"
+		try(Socket socket = new Socket(IP, PORT)) {
+			schreibeNachricht(socket, msg);
+		}
 	}
 	
 	public static String marshall( BestellPosition bp) {
-		//Implementieren Sie eine geeignete Serialisierung (Marshalling) der Objekte der Klasse BestellPosition
-		return null;
+		//DONE - Implementieren Sie eine geeignete Serialisierung (Marshalling) der Objekte der Klasse BestellPosition
+		return String.format("%s\t%s\t%s", bp.material, bp.preis, bp.anzahl);
 	}
 	
 	public static void sendeBestellung(BestellPosition bp) throws Exception {
