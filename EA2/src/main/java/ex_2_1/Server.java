@@ -1,4 +1,4 @@
-package a_2_1;
+package ex_2_1;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

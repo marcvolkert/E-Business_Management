@@ -1,4 +1,4 @@
-package a_2_3;
+package ex_2_3;
 
 import java.io.Serializable;
 
