@@ -1,4 +1,4 @@
-package a_2_1;
+package ex_2_1;
 
 public class BestellPosition {
 	public String material;

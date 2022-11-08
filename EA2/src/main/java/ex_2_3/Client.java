@@ -1,4 +1,4 @@
-package a_2_3;
+package ex_2_3;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -13,7 +13,10 @@ public class Client {
 		bp.anzahl = 5;
 		
 		//Fragen Sie die Registrierung ab, um eine Referenz auf einen zuvor registrierten BestellServer zu erhalten.
-		//Verwenden Sie die Referenz, um die Bestellung der Bestellposition durchzuführen. 
+		//Verwenden Sie die Referenz, um die Bestellung der Bestellposition durchzuführen.
+		Registry registry = LocateRegistry.getRegistry();
+		BestellServer bestellServer = (BestellServer) registry.lookup("BestellServer");
+		bestellServer.bestelle(bp);
 
 	}
 }
