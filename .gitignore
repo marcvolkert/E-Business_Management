@@ -1,5 +1,5 @@
 /.idea/*
-/EA3.iml
+/*/*.iml
 /*/target/*
 /*/jade/lib/*:Zone.Identifier
 *.txt
