@@ -108,7 +108,7 @@ public class JobAgent extends Agent {
 				if (accept != null) {
 					//TODO: erstellen Sie die Akzeptanznachricht
 					accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
-					accept.setContent(String.valueOf(fruehsteFertigstellungszeit));
+					accept.setContent(String.valueOf(bearbeitungsdauer));
 				}
 			}} );
 	  } 

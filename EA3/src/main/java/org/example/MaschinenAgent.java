@@ -69,8 +69,6 @@ public class MaschinenAgent extends Agent {
 				propose.setPerformative(ACLMessage.PROPOSE);
 				//TODO: fügen Sie der Nachricht den Inhalt hinzu
 				propose.setContent(fruehsteFertigstellungszeit + ";" + bearbeitungspauschale);
-				System.out.println(this.getAgent().getAID() + " fertigstellungszeit: " + fertigstellungszeit);
-				System.out.println(this.getAgent().getAID() + " bearbeitungszeit angefragt: " + bearbeitungszeit);
 				return propose;
 			}
 
