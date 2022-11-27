@@ -1,3 +1,4 @@
+import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.DFService;
@@ -6,8 +7,12 @@ import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import jade.proto.ContractNetInitiator;
 
+import java.sql.SQLOutput;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -40,25 +45,42 @@ public class JobAgent extends Agent {
 		AID[] maschinenAgenten = null;
 
 		//TODO: implementieren Sie die Abfage des Agent-Directory-Service hier ...
-		
+		DFAgentDescription ad = new DFAgentDescription();
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("maschine");
+		ad.addServices(sd);
+		try {
+			DFAgentDescription[] results = DFService.search(this, ad);
+			maschinenAgenten = new AID[results.length];
+			for(int i = 0; i < results.length; i++) {
+				maschinenAgenten[i] = results[i].getName();
+			}
+		} catch (FIPAException e) {
+			e.printStackTrace();
+		}
+
 		//Nachricht (Call for Proposal - CFP) gemäß des Kontraktnetz-Protokolls
 		//vorbereiten, die an alle gefundenen Agenten versendet wird.
 		ACLMessage msg = new ACLMessage(ACLMessage.CFP);
-		for (AID aid : maschinenAgenten) {		
+		assert maschinenAgenten != null;
+		for (AID aid : maschinenAgenten) {
 			msg.addReceiver(aid);
 			msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
-			
+
 			//TODO: fügen Sie der Nachricht den Inhalt (Content) hinzu ...
+			msg.setContent(String.valueOf(bearbeitungsdauer));
+			msg.setReplyByDate(new Date(System.currentTimeMillis() + 1000));
+			send(msg);
 		}
 		
 		//Antwortverhalten für die Nachricht als Subklasse der Klasse <ContractNetInitiator>
 		//implementieren und registrieren.
 		addBehaviour(new ContractNetInitiator(this, msg) {
-
 			//Überschreiben der Funktion <handleAllResponses> um das Auswahlverhalten
 			//des Auftragsagenten nach Erhalt aller Vertragsvorschläge zu implementieren
 			@Override
 			protected void handleAllResponses(Vector responses, Vector acceptances) {
+				System.out.println("here");
 				//Auswertung der Vorschläge und ermitteln des besten Vorschlags.
 				//Gleichzeitig werden die Antworten an alle Resourcenagenten vorbereitet
 				int fruehsteFertigstellungszeit = -1;
@@ -70,15 +92,26 @@ public class JobAgent extends Agent {
 						ACLMessage reply = msg.createReply();
 						reply.setPerformative(ACLMessage.REJECT_PROPOSAL);
 						acceptances.addElement(reply);
+						System.out.println("over here");
 
 						//TODO: implementieren Sie die Auswahl der Maschine hier ...
-						//TODO: setzen die die Variable "accept" auf eine entsprechende Referenz ... 
+						//TODO: setzen die die Variable "accept" auf eine entsprechende Referenz ...
+						String[] parts = reply.getContent().split(";");
+						int fertigstellungszeit = Integer.parseInt(parts[0]);
+						int bearbeitungspauschale = Integer.parseInt(parts[1]);
+						if(bearbeitungspauschale < budget && (fruehsteFertigstellungszeit > fertigstellungszeit || fruehsteFertigstellungszeit < 0)) {
+							System.out.println("over there");
+							accept = reply;
+							fruehsteFertigstellungszeit = fertigstellungszeit;
+						}
 					}
 				}
 				//Akzeptieren des besten Angebotes vorbereiten und den entsprechenden
 				//Ressourcenagenten durch eine Nachricht informieren. 
 				if (accept != null) {
-					//TODO: erstellen Sie die Akzeptanznachricht 
+					//TODO: erstellen Sie die Akzeptanznachricht
+					System.out.println("there");
+					accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
 				}						
 			}} );
 	  } 

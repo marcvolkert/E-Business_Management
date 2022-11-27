@@ -61,11 +61,13 @@ public class MaschinenAgent extends Agent {
 				
 				int bearbeitungszeit = Integer.parseInt( cfp.getContent() );
 				int fruehsteFertigstellungszeit = fertigstellungszeit + bearbeitungszeit;
-				
+
 
 				ACLMessage propose = cfp.createReply();
 				propose.setPerformative(ACLMessage.PROPOSE);
 				//TODO: fügen Sie der Nachricht den Inhalt hinzu
+				propose.setContent(fruehsteFertigstellungszeit + ";" + bearbeitungspauschale);
+				System.out.println(propose);
 				return propose;
 			}
 
