@@ -19,10 +19,10 @@ public class JobAgent extends Agent {
 	
 	@SuppressWarnings("serial")
 	protected void setup() {
-		//Bearbeitungsdauer des Auftrags aus dem �bergebenen Parameter lesen
+		//Bearbeitungsdauer des Auftrags aus dem übergebenen Parameter lesen
 		Object[] args = getArguments();
 		if( args.length < 2 ) {
-			System.out.println( "keine Bearbeitungsdauer f�r den Job angegeben" );
+			System.out.println( "keine Bearbeitungsdauer für den Job angegeben" );
 			this.doDelete();
 			return;
 		}
@@ -30,7 +30,7 @@ public class JobAgent extends Agent {
 			bearbeitungsdauer = Integer.parseInt(args[0].toString());
 			budget = Integer.parseInt(args[1].toString());
 		} catch( Exception e) {
-			System.out.println( "Bearbeitungsdauer und Budget eines Jobs m�ssen vom Typ Integer sein" );
+			System.out.println( "Bearbeitungsdauer und Budget eines Jobs müssen vom Typ Integer sein" );
 			this.doDelete();
 			return;
 		}
@@ -41,25 +41,25 @@ public class JobAgent extends Agent {
 
 		//TODO: implementieren Sie die Abfage des Agent-Directory-Service hier ...
 		
-		//Nachricht (Call for Proposal - CFP) gem�� des Kontraktnetz-Protokolls 
+		//Nachricht (Call for Proposal - CFP) gemäß des Kontraktnetz-Protokolls
 		//vorbereiten, die an alle gefundenen Agenten versendet wird.
 		ACLMessage msg = new ACLMessage(ACLMessage.CFP);
 		for (AID aid : maschinenAgenten) {		
 			msg.addReceiver(aid);
 			msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
 			
-			//TODO: f�gen Sie der Nachricht den Inhalt (Content) hinzu ...
+			//TODO: fügen Sie der Nachricht den Inhalt (Content) hinzu ...
 		}
 		
-		//Antwortverhalten f�r die Nachricht als Subklasse der Klasse <ContractNetInitiator>
+		//Antwortverhalten für die Nachricht als Subklasse der Klasse <ContractNetInitiator>
 		//implementieren und registrieren.
 		addBehaviour(new ContractNetInitiator(this, msg) {
 
-			//�berschreiben der Funktion <handleAllResponses> um das Auswahlverhalten
-			//des Auftragsagenten nach Erhalt aller Vertragsvorschl�ge zu implementieren 
+			//Überschreiben der Funktion <handleAllResponses> um das Auswahlverhalten
+			//des Auftragsagenten nach Erhalt aller Vertragsvorschläge zu implementieren
 			@Override
 			protected void handleAllResponses(Vector responses, Vector acceptances) {
-				//Auswertung der Vorschl�ge und ermitteln des besten Vorschlags.
+				//Auswertung der Vorschläge und ermitteln des besten Vorschlags.
 				//Gleichzeitig werden die Antworten an alle Resourcenagenten vorbereitet
 				int fruehsteFertigstellungszeit = -1;
 				ACLMessage accept = null;
